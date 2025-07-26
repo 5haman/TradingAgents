@@ -4,6 +4,7 @@ from .yfin_utils import YFinanceUtils
 from .reddit_utils import fetch_top_from_category
 from .stockstats_utils import StockstatsUtils
 from .yfin_utils import YFinanceUtils
+from .crypto_utils import get_crypto_price_history, get_crypto_metrics
 
 from .interface import (
     # News and sentiment functions
@@ -43,4 +44,6 @@ __all__ = [
     # Market data functions
     "get_YFin_data_window",
     "get_YFin_data",
+    "get_crypto_price_history",
+    "get_crypto_metrics",
 ]
