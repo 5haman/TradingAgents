@@ -11,6 +11,7 @@ import os
 from dateutil.relativedelta import relativedelta
 from langchain_openai import ChatOpenAI
 import tradingagents.dataflows.interface as interface
+import tradingagents.dataflows.crypto_utils as crypto_utils
 from tradingagents.default_config import DEFAULT_CONFIG
 from langchain_core.messages import HumanMessage
 
@@ -19,15 +20,15 @@ def create_msg_delete():
     def delete_messages(state):
         """Clear messages and add placeholder for Anthropic compatibility"""
         messages = state["messages"]
-        
+
         # Remove all messages
         removal_operations = [RemoveMessage(id=m.id) for m in messages]
-        
+
         # Add a minimal placeholder message
         placeholder = HumanMessage(content="Continue")
-        
+
         return {"messages": removal_operations + [placeholder]}
-    
+
     return delete_messages
 
 
@@ -60,7 +61,7 @@ class Toolkit:
         Returns:
             str: A formatted dataframe containing the latest global news from Reddit in the specified time frame.
         """
-        
+
         global_news_result = interface.get_reddit_global_news(curr_date, 7, 5)
 
         return global_news_result
@@ -160,6 +161,28 @@ class Toolkit:
         result_data = interface.get_YFin_data_online(symbol, start_date, end_date)
 
         return result_data
+
+    @staticmethod
+    @tool
+    def get_crypto_price_online(
+        symbol: Annotated[str, "crypto ticker like BTC-USD"],
+        start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
+        end_date: Annotated[str, "End date in yyyy-mm-dd format"],
+    ) -> str:
+        """Retrieve crypto price history from CoinGecko."""
+
+        df = crypto_utils.get_crypto_price_history(symbol, start_date, end_date)
+        return df.to_csv(index=False)
+
+    @staticmethod
+    @tool
+    def get_crypto_indicators(
+        symbol: Annotated[str, "crypto ticker like BTC-USD"],
+    ) -> str:
+        """Fetch basic crypto metrics from CoinGecko."""
+
+        df = crypto_utils.get_crypto_metrics(symbol)
+        return df.to_csv(index=False)
 
     @staticmethod
     @tool

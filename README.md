@@ -167,6 +167,17 @@ _, decision = ta.propagate("NVDA", "2024-05-10")
 print(decision)
 ```
 
+To analyze cryptocurrencies, pass a ticker like `BTC-USD` and keep `online_tools` enabled:
+
+```python
+config["online_tools"] = True
+ta = TradingAgentsGraph(debug=True, config=config)
+_, decision = ta.propagate("BTC-USD", "2024-05-10")
+print(decision)
+```
+
+When selecting a crypto asset the Fundamentals analyst can be skipped since traditional filings are not available.
+
 You can also adjust the default configuration to set your own choice of LLMs, debate rounds, etc.
 
 ```python
